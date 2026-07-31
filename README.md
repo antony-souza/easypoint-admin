@@ -1,72 +1,72 @@
 # EasyPoint Admin
 
-Painel administrativo web do **EasyPoint — Ponto Fácil**, destinado ao gerenciamento das operações e informações do estabelecimento.
+Painel administrativo web do EasyPoint, responsável pelo gerenciamento centralizado dos estabelecimentos e das operações do sistema.
 
-## 🎯 Propósito
+## Responsabilidade
 
-O `easypoint-admin` fornece uma interface web para administradores e gestores controlarem os dados e operações do EasyPoint.
+O EasyPoint Admin é utilizado por administradores e gestores para controlar o sistema através de uma interface web.
 
-## 📊 Principais responsabilidades
+É responsável por disponibilizar recursos para:
 
 * Gerenciamento de produtos
-* Alteração de preços
+* Gerenciamento de preços
 * Controle de estoque
+* Entradas e saídas de estoque
+* Gerenciamento de lotes
 * Consulta de vendas
-* Visualização de relatórios
+* Relatórios
+* Gerenciamento de lojas
 * Gerenciamento de caixas
 * Gerenciamento de usuários
-* Configuração do estabelecimento
-* Visualização de informações operacionais
+* Permissões de acesso
+* Configurações do sistema
+* Acompanhamento da operação
 
-## 🏗️ Arquitetura
+## Comunicação
 
-```text
-             EasyPoint Admin
-                    │
-                    │ HTTP/HTTPS
-                    ▼
-              EasyPoint API
-                    │
-                    ▼
-                PostgreSQL
-```
+O painel não acessa diretamente o PostgreSQL.
 
-O painel não acessa diretamente o banco de dados. Todas as operações são realizadas através da API do EasyPoint.
-
-## 🛠️ Tecnologias
-
-* React
-* TypeScript
-* Vite
-* HTTP/REST API
-
-## 📌 Responsabilidade
-
-O painel administrativo é responsável pela **gestão e visualização das informações do sistema**.
-
-Por exemplo, ao alterar o preço de um produto:
+Toda operação passa pela API:
 
 ```text
 Administrador
       ↓
 EasyPoint Admin
       ↓
+HTTPS
+      ↓
 EasyPoint API
       ↓
-Banco de dados
-      ↓
-Novo preço disponível
-      ↓
-EasyPoint PDV
+PostgreSQL
 ```
 
-Dessa forma, os caixas sempre consultam as informações centralizadas no backend.
+Por exemplo, quando um administrador altera o preço de um produto:
 
-## 🚧 Status
+```text
+Admin
+ ↓
+API
+ ↓
+PostgreSQL
+ ↓
+Evento de sincronização
+ ↓
+PDV
+ ↓
+SQLite local
+```
 
-Em desenvolvimento.
+Dessa forma, o painel controla os dados centralizados enquanto a API é responsável por aplicar as regras de negócio e distribuir as alterações aos PDVs.
 
-## 🔗 Projetos relacionados
+## Stack
 
-* `easypoint-api` — backend central da plataforma
-* `easypoint-pdv` — aplicação desktop para operação do caixa
+* **React**
+* **TypeScript**
+* **TanStack Query**
+* **TanStack Router**
+* **REST API**
+* **HTML / CSS**
+
+## Princípio
+
+> **O Admin gerencia a operação central do EasyPoint através da API, sem acessar diretamente os bancos dos PDVs.**
